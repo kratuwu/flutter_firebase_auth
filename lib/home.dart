@@ -11,7 +11,7 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class Home extends StatefulWidget {
   Home({Key key, this.title}) : super(key: key);
-  String title;
+  final String title;
 
   Future<FirebaseUser> _handleSignIn() async {
     GoogleSignInAccount googleUser = await _googleSignIn.signIn();
