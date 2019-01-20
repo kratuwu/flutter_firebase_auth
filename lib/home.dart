@@ -1,34 +1,27 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-
+import 'package:flutter_firebase_auth/auth_provider.dart';
 import 'app/app.dart';
-
-final GoogleSignIn _googleSignIn = GoogleSignIn();
-final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class Home extends StatefulWidget {
   Home({Key key, this.title}) : super(key: key);
+
   final String title;
 
-  Future<FirebaseUser> _handleSignIn() async {
-    GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    FirebaseUser user = await _auth.signInWithGoogle(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-    print("signed in " + user.displayName);
-    return user;
-  }
-
   @override
-  _HomeState createState() => new _HomeState();
+  State<StatefulWidget> createState() => new _HomeState();
 }
 
 class _HomeState extends State<Home> {
+  void validateAndSubmit() async {
+    await AuthProvider.of(context).auth.signIn();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => App(title: widget.title)),
+    );
+    Navigator.pop(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
@@ -49,16 +42,7 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
-        onPressed: () {
-          widget
-              ._handleSignIn()
-              .then((FirebaseUser user) => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => App(title: widget.title)),
-                  ))
-              .catchError((e) => print(e));
-        },
+        onPressed: validateAndSubmit,
         color: Colors.white,
       ),
     )));

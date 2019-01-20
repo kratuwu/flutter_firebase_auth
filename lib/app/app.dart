@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_firebase_auth/auth_provider.dart';
 
 class App extends StatefulWidget {
   App({Key key, this.title}) : super(key: key);
@@ -9,8 +8,8 @@ class App extends StatefulWidget {
 
   void _signOut(BuildContext context) async {
     try {
-      await FirebaseAuth.instance.signOut();
-      await GoogleSignIn().signOut();
+      await AuthProvider.of(context).auth.signOut();
+      Navigator.pop(context);
     } catch (e) {
       print(e);
     }
